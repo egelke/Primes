@@ -53,19 +53,12 @@ namespace PrimeCSharp.Sieves
 
             while (factor <= q)
             {
-                for (int num = factor; num <= q; num += 2)
-                {
-                    if (boolArray[num >> 1] == false)
-                    {
-                        factor = num;
-                        break;
-                    }
-                }
+                while (boolArray[factor >> 1]) factor += 2;
 
-                int increment = factor * 2;
-
-                for (int num = factor * factor; num <= SieveSize; num += increment)
-                    boolArray[num >> 1] = true;
+                int max = SieveSize >> 1;
+                int increment = (factor * 2) >> 1;
+                for (int num = (factor * factor) >> 1; num < max; num += increment)
+                    boolArray[num] = true;
 
                 factor += 2;
             }
