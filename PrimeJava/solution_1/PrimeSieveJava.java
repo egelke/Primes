@@ -14,7 +14,7 @@ public class PrimeSieveJava
 	{
 		this.sieveSize = sieveSize;
 		// unlike the other old implementations the dataSet isn't initialized with true values to optimize speed
-		dataSet = new boolean[(sieveSize + 1) >> 1];
+		dataSet = new boolean[sieveSize >> 1];
 	}
 	
 	public int countPrimes()
@@ -48,33 +48,29 @@ public class PrimeSieveJava
 	{
 		return (index & 1) == 1 && !dataSet[index >> 1];
 	}
-	
+
 	// Again instead of checking if index is even we just update the array at that index equivalent to that check
 	// to boost performance
 	private void clearBit(int index)
 	{
-		dataSet[index >> 1] = (index & 1) == 1;
+		dataSet[index >> 1] = true;
 	}
-	
+
+
 	public void runSieve()
 	{
 		int factor = 3;
 		int q = (int) Math.sqrt(sieveSize);
-		
+
 		while (factor < q)
 		{
-			for (int num = factor; num <= sieveSize; num++)
-			{
-				if (getBit(num))
-				{
-					factor = num;
-					break;
-				}
-			}
-			
-			for (int num = factor * factor; num <= sieveSize; num += factor * 2)
-				clearBit(num);
-			
+			while (dataSet[factor >> 1]) factor+=2;
+
+			int max = sieveSize >> 1;
+			int increment = (factor * 2) >> 1;
+			for (int num = (factor * factor) >> 1; num < max; num += increment)
+				dataSet[num] = true;
+
 			factor += 2;
 		}
 	}
@@ -119,7 +115,7 @@ public class PrimeSieveJava
 		int passes = 0;
 		PrimeSieveJava sieve = null;
 		
-		while ((System.currentTimeMillis() - start) < 10000)
+		while ((System.currentTimeMillis() - start) < 5000L)
 		{
 			sieve = new PrimeSieveJava(1000000);
 			sieve.runSieve();
